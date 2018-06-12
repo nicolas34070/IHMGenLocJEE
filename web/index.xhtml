@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Cartographie GenLoc</title>
+        <meta name="viewport" content="initial-scale=1.0"/>
+        <meta charset="utf-8"/>
+            <style>
+            /* Always set the map height explicitly to define the size of the div
+            * element that contains the map. */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+    </h:head>
+    <h:body>
+        
+        <h:form>
+            <p:growl id="growl" life="2000" />
+     
+            <p:commandButton value="Connexion/Deconnexion serveur" id="connexion" update="growl" actionListener="#{buttonView.buttonAction}" styleClass="ui-priority-primary" />
+            
+        </h:form>
+        
+        <div id="map"></div>
+            <script>
+                var myLatLng;
+                var marker;
+                
+                var latitude = #{buttonView.getLatitude()};
+                var longitude = #{buttonView.getLongitude()};
+                var intervalID;
+                var map;
+                
+                function initMap() {
+                    myLatLng = {lat: latitude, lng: longitude};
+
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        center: myLatLng,
+                        zoom: 15
+                    });
+                    marker = new google.maps.Marker({
+                        position: myLatLng,
+                        map: map,
+                        title: 'GenLoc'
+                    });
+                    
+                    marker.setMap(map);
+
+                    intervalID = setInterval(refreshmap, 2500);
+
+                }
+
+                function refreshmap() {
+                    latitude += 0.0005;
+                    longitude += 0.0005;
+
+                    myLatLng = {lat: latitude, lng: longitude};
+
+                    map.setCenter(myLatLng);
+
+                    var curPositionB = new google.maps.LatLng(latitude, longitude);
+
+                    marker.position = curPositionB;
+                    marker.setMap(map);
+
+                }
+
+            </script>
+            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCn-Mid7ORsg-qEW_m5ya-ZXXNjJxH_Pik&amp;callback=initMap"
+            async = "defer"></script>
+    </h:body>
+</html>
