@@ -13,6 +13,9 @@ import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.event.ActionEvent;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 
 /**
  *
@@ -26,8 +29,9 @@ public class ButtonView implements Serializable {
     
     private double latitude;
     private double longitude;
-    private clientTCP leClient;
-    private boolean etatReceptionMessages;
+    private clientTCPBean leClient;
+    
+
     
     public ButtonView(){
         setLatitude(43.3554722);
@@ -42,6 +46,7 @@ public class ButtonView implements Serializable {
         if(etatConnexion == true){
             System.out.println("Déconnexion");
             etatConnexion = false;
+            addMessage("Serveur déconnecté");
             try {
                 leClient.fermerClient();
             } catch (IOException ex) {
@@ -51,8 +56,9 @@ public class ButtonView implements Serializable {
         else{
             System.out.println("Connexion");
             etatConnexion = true;
+            addMessage("Serveur connecté");
             try {
-                leClient = new clientTCP();
+                leClient = new clientTCPBean();
                 leClient.demarrageClient();
                 leClient.recevoirMessage();
             } catch (IOException ex) {
@@ -60,6 +66,11 @@ public class ButtonView implements Serializable {
             }
         }
         
+    }
+    
+    public void addMessage(String summary) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
     /**
