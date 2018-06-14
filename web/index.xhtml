@@ -27,6 +27,8 @@
             <p:growl id="growl" life="2000" />
      
             <p:commandButton value="Connexion/Deconnexion serveur" id="connexion" update="growl" actionListener="#{buttonView.buttonAction}" styleClass="ui-priority-primary" />
+            <h:outputText id="latitude" value="Latitude : #{buttonView.getLatitude()} " />
+            <h:outputText id="longitude" value="Longitude : #{buttonView.getLongitude()}" />
             
         </h:form>
         
