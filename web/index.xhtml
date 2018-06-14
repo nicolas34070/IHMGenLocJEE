@@ -27,8 +27,8 @@
             <p:growl id="growl" life="2000" />
      
             <p:commandButton value="Connexion/Deconnexion serveur" id="connexion" update="growl" actionListener="#{buttonView.buttonAction}" styleClass="ui-priority-primary" />
-            <h:outputText id="latitude" value="Latitude : #{buttonView.getLatitude()} " />
-            <h:outputText id="longitude" value="Longitude : #{buttonView.getLongitude()}" />
+            <h:outputText id="latitude" value="#{clientTCPBean.getLatitude()} " />
+            <h:outputText id="longitude" value="#{clientTCPBean.getLongitude()}" />
             
         </h:form>
         
@@ -36,13 +36,15 @@
             <script>
                 var myLatLng;
                 var marker;
-                
-                var latitude = #{buttonView.getLatitude()};
-                var longitude = #{buttonView.getLongitude()};
+                var latitude;
+                var longitude;
                 var intervalID;
                 var map;
                 
                 function initMap() {
+                    latitude = #{clientTCPBean.getLatitude()};
+                    longitude = #{clientTCPBean.getLongitude()};
+                    
                     myLatLng = {lat: latitude, lng: longitude};
 
                     map = new google.maps.Map(document.getElementById('map'), {
@@ -62,9 +64,13 @@
                 }
 
                 function refreshmap() {
-                    latitude += 0.0005;
-                    longitude += 0.0005;
-
+                    latitude = #{clientTCPBean.getLatitude()};
+                    longitude = #{clientTCPBean.getLongitude()};
+                    
+                    
+                    
+                    console.log(latitude);
+                    
                     myLatLng = {lat: latitude, lng: longitude};
 
                     map.setCenter(myLatLng);
