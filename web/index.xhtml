@@ -25,7 +25,7 @@
         
         <h:form>
             <p:growl id="growl" life="2000" />
-     
+             <a href="map.xhtml">v2</a> 
             <p:commandButton value="Connexion/Deconnexion serveur" id="connexion" update="growl" actionListener="#{buttonView.buttonAction}" styleClass="ui-priority-primary" />
             <h:outputText id="latitude" value="#{clientTCPBean.getLatitude()} " />
             <h:outputText id="longitude" value="#{clientTCPBean.getLongitude()}" />
@@ -46,7 +46,7 @@
                     longitude = #{clientTCPBean.getLongitude()};
                     
                     myLatLng = {lat: latitude, lng: longitude};
-
+                    
                     map = new google.maps.Map(document.getElementById('map'), {
                         center: myLatLng,
                         zoom: 15
@@ -66,8 +66,6 @@
                 function refreshmap() {
                     latitude = #{clientTCPBean.getLatitude()};
                     longitude = #{clientTCPBean.getLongitude()};
-                    
-                    
                     
                     console.log(latitude);
                     

@@ -42,9 +42,9 @@ public class clientTCP {
     public void fermerClient() throws IOException {
 
         try {
-            getSocket().close();
             in.close();
             out.close();
+            getSocket().close();
             System.out.println("The server is shut down!");
             etatClient = false;
         } catch (IOException e) {
@@ -53,7 +53,8 @@ public class clientTCP {
 
     public void recevoirMessage() {
 
-        Thread thread = new Thread(new Runnable() {
+        Thread thread;
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 System.out.println("reception des messages...");

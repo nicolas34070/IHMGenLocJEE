@@ -34,8 +34,8 @@ public class ButtonView implements Serializable {
 
     
     public ButtonView(){
-        setLatitude(43.3554722);
-        setLongitude(5.33866667);
+
+        
     }
 
     /**

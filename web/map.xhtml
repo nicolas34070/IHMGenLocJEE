@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Cartographie GenLoc</title>
+        <meta name="viewport" content="initial-scale=1.0"/>
+        <meta charset="utf-8"/>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCn-Mid7ORsg-qEW_m5ya-ZXXNjJxH_Pik&amp;"></script>
+    </h:head>
+    <h:body>
+        
+       
+        <h:form>
+        <p:gmap id="map2" center="#{clientTCPBean.getLatitude()}, #{clientTCPBean.getLongitude()}" zoom="15" type="HYBRID" style="width:100%;height:400px" model="#{clientTCPBean.getSimpleModel()}"/>
+        <p:poll interval="3" listener="#{clientTCPBean.refresh}" update="map2" />
+        </h:form>
+    </h:body>
+</html>
