@@ -7,14 +7,24 @@
         <title>Cartographie GenLoc</title>
         <meta name="viewport" content="initial-scale=1.0"/>
         <meta charset="utf-8"/>
+        <style>
+            html, body, form {
+                height: 100%;
+                margin: 0;
+            }
+            .mapClass {
+                width: 100%;
+                height: 95%;
+            }
+        </style>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCn-Mid7ORsg-qEW_m5ya-ZXXNjJxH_Pik&amp;"></script>
     </h:head>
     <h:body>
         <h:form>
-        <p:growl id="growl" life="2000" />
-        <p:commandButton value="Connexion/Deconnexion serveur" id="connexion" update="growl" actionListener="#{buttonView.buttonAction}" styleClass="ui-priority-primary" />
-        <p:gmap id="map2" center="#{clientTCPBean.getLatitude()}, #{clientTCPBean.getLongitude()}" zoom="16" type="HYBRID" style="width:100%;height:700px" model="#{clientTCPBean.getSimpleModel()}"/>
-        <p:poll interval="10" listener="#{clientTCPBean.refresh}" update="map2" />
+            <p:growl id="growl" life="2000" />
+            <p:commandButton value="Connexion/Deconnexion serveur" id="connexion" update="growl" actionListener="#{buttonView.buttonAction}" styleClass="ui-priority-primary" />
+            <p:gmap id="map2" center="#{clientTCPBean.getLatitude()}, #{clientTCPBean.getLongitude()}" zoom="16" type="HYBRID" styleClass="mapClass" model="#{clientTCPBean.getSimpleModel()}"/>
+            <p:poll interval="10" listener="#{clientTCPBean.refresh}" update="map2" />
         </h:form>
     </h:body>
 </html>
