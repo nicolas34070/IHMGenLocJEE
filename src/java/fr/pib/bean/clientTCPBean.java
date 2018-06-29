@@ -10,17 +10,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import javax.inject.Named;
 import java.io.Serializable;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+
 /**
  *
  * @author Nico
@@ -37,32 +38,37 @@ public class clientTCPBean implements Serializable {
     private String messageRecu;
     private static double latitude;
     private static double longitude;
+    private String idBuggy;
     private MapModel simpleModel;
     private LatLng coord1;
+    private Marker marker1;
 
     public clientTCPBean() throws IOException {
         etatClient = false;
         simpleModel = new DefaultMapModel();
-//        setLatitude(43.3554722);
-//        setLongitude(5.33866667);
-        
-        setLatitude(43.3158531);
-        setLongitude(5.3655611);
-        
-        LatLng coord1 = new LatLng(getLatitude(), getLongitude());
-        simpleModel.addOverlay(new Marker(coord1, "GenLoc"));
-        
-    }
-    
-    public void refresh(){
-        setLatitude(getLatitude()+0.0005);
-        setLongitude(getLongitude()+0.0005);
+
+        setLatitude(43.355308);
+        setLongitude(5.338436);
+
         coord1 = new LatLng(getLatitude(), getLongitude());
+        marker1 = new Marker(coord1, "GenLoc");
+        simpleModel.addOverlay(marker1);
+
+    }
+
+    public void refresh() {
+        marker1.setVisible(false);
+        setLatitude(getLatitude());
+        setLongitude(getLongitude());
+        coord1 = new LatLng(getLatitude(), getLongitude());
+        marker1 = new Marker(coord1, "GenLoc");
         simpleModel = new DefaultMapModel();
-        simpleModel.addOverlay(new Marker(coord1, "GenLoc"));
+        //simpleModel.addOverlay(new Marker(coord1, "GenLoc"));
+        simpleModel.addOverlay(marker1);
+        marker1.setVisible(true);
         System.out.println("mise a jour");
     }
-    
+
     public MapModel getSimpleModel() {
         return simpleModel;
     }
@@ -96,7 +102,7 @@ public class clientTCPBean implements Serializable {
             @Override
             public void run() {
                 System.out.println("reception des messages...");
-                
+
                 while (true) {
                     BufferedReader in = null;
                     try {
@@ -112,44 +118,61 @@ public class clientTCPBean implements Serializable {
                         Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     System.out.println("Received from  server: " + getMessageRecu());
-                    
+
                 }
             }
         });
         thread.start();
     }
-    
-    public void traitementMessage(){
-        //4321.3112,N,00520.30965,E
+
+    public void traitementMessage() {
+        //4321.3177,N,00520.27288,E,Buggy1
         double tamponDegresLatitude;
         double tamponMinutesLatitude;
         double tamponSecondesLatitude;
         double tamponDegresLongitude;
         double tamponMinutesLongitude;
         double tamponSecondesLongitude;
-        
+
         double latitudeDecimale;
         double longitudeDecimale;
-        
         
         tamponDegresLatitude = Integer.parseInt(getMessageRecu().substring(0, 2));
         tamponMinutesLatitude = Integer.parseInt(getMessageRecu().substring(2, 4));
         tamponSecondesLatitude = Integer.parseInt(getMessageRecu().substring(5, 9));
-        
+
         tamponDegresLongitude = Integer.parseInt(getMessageRecu().substring(14, 15));
         tamponMinutesLongitude = Integer.parseInt(getMessageRecu().substring(15, 17));
-        tamponSecondesLongitude = Integer.parseInt(getMessageRecu().substring(18, 21));
+        tamponSecondesLongitude = Integer.parseInt(getMessageRecu().substring(18, 22));
+
+        latitudeDecimale = tamponDegresLatitude + (tamponMinutesLatitude / 60.0) + ((tamponSecondesLatitude * 0.006) / 3600.0);
+        longitudeDecimale = tamponDegresLongitude + (tamponMinutesLongitude / 60.0) + ((tamponSecondesLongitude * 0.006) / 3600.0);
         
-        latitudeDecimale = tamponDegresLatitude + (tamponMinutesLatitude/60.0) + ((tamponSecondesLatitude*0.006)/3600.0);
-        longitudeDecimale = tamponDegresLongitude + (tamponMinutesLongitude/60) + ((tamponSecondesLongitude*0.006)/3600);
-        
+        idBuggy = getMessageRecu().substring(26, 32);
+
         setLatitude(latitudeDecimale);
         setLongitude(longitudeDecimale);
-        
-        System.out.println(latitudeDecimale);
-        System.out.println(longitudeDecimale);
-        
+        setIdBuggy(idBuggy);
+
+        System.out.println("Latitude : " + latitudeDecimale);
+        System.out.println("Longitude : " + longitudeDecimale);
+        System.out.println("ID Buggy : " + idBuggy);
     }
+    
+    public void allumerLED(ActionEvent actionEvent){
+        String message_Allumer_LED_3 = "AT+GPIOEXTSET=57,1\n";
+        
+        out.println(message_Allumer_LED_3);
+        out.flush();
+    }
+    
+    public void eteindreLED(ActionEvent actionEvent){
+        String message_Eteindre_LED_3 = "AT+GPIOEXTSET=57,0\n";
+        
+        out.println(message_Eteindre_LED_3);
+        out.flush();
+    }
+    
 
     /**
      * @return the socket
@@ -206,5 +229,19 @@ public class clientTCPBean implements Serializable {
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
-    
+
+    /**
+     * @return the idBuggy
+     */
+    public String getIdBuggy() {
+        return idBuggy;
+    }
+
+    /**
+     * @param idBuggy the idBuggy to set
+     */
+    public void setIdBuggy(String idBuggy) {
+        this.idBuggy = idBuggy;
+    }
+
 }
